@@ -77,6 +77,10 @@ namespace LegoQuality
                     Console.WriteLine($"HIBA! Gyártósor: {item.productionLineId}");
                     groupedLogWriter.AddLogItem(item);
                 }
+                else
+                {
+                    groupedLogWriter.GoodItemFound();
+                }
 
                 
             }
