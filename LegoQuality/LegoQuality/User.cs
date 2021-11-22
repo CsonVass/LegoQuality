@@ -21,8 +21,9 @@ namespace LegoQuality
         public static List<User> ReadUsers()
         {
             List<User> listOfUsers = new List<User>();
+            string workingDirectory = Environment.CurrentDirectory;
             string fileName = "login.txt";
-            string path = Path.Combine(Environment.CurrentDirectory, @"src\", fileName);
+            string path = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.FullName, fileName);
             string[] lines = File.ReadAllLines(path);
 
             foreach (string line in lines)
