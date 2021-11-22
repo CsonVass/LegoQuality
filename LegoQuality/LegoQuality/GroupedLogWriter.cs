@@ -7,6 +7,7 @@ class GroupedLogWriter
 {
     private string logFileName;
     private List<LogItem> logItems;
+    private int goodItems = 0;
 
     public GroupedLogWriter(string logFileName)
     {
@@ -21,6 +22,11 @@ class GroupedLogWriter
 
     public void AddLogItem(LogItem logItem) => logItems.Add(logItem);
 
+    public void GoodItemFound()
+    {
+        goodItems++;
+    }
+
     public void WriteToFile()
     {
         var logItemsGrouped = logItems
@@ -29,7 +35,7 @@ class GroupedLogWriter
             .Select(LogItemToString);
 
         var lines = new List<string>(){
-                logItemsGrouped.Count().ToString()
+                (logItemsGrouped.Count() + goodItems).ToString()
             }
             .Concat(logItemsGrouped);
 
