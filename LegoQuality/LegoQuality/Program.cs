@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LegoQuality
 {
@@ -34,23 +35,60 @@ namespace LegoQuality
             Console.Clear();
             Console.WriteLine($"Üdv {name}!");
 
-            var groupedLogWriter = new GroupedLogWriter(@"testlog.txt");
-            groupedLogWriter.AddLogItem(new LogItem()
+
+            ///
+            //Reading input
+            ///
+
+            string workingDirectory = Environment.CurrentDirectory;
+            string inputFileName = "input.txt";
+            string inputPath = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.FullName, inputFileName);
+
+            string testFileName = "testlog.txt";
+            string testpath = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.FullName, testFileName);
+
+            string summaryFileName = "testSummary.txt";
+            string summaryPath = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.FullName, summaryFileName);
+
+            IInputSource inputSource = new MockInputSource(inputPath);
+            var groupedLogWriter = new GroupedLogWriter(testpath);
+
+            while (inputSource.HasNextInput())
             {
-                time = DateTime.Now,
-                productionLineId = "0",
-                elemId = "0",
-                color = "red",
-                size = 0,
-                elType = 0,
-                errType = 0,
-            });
+                String input = inputSource.GetNextInput();
+                //Console.WriteLine("Beolvasva" + input);
+                string[] values = input.Split(';');
+                LogItem item = new LogItem()
+                {
+                    time = DateTimeOffset
+               .FromUnixTimeSeconds(long.Parse(values[0]))
+               .DateTime,
+                    productionLineId = values[1],
+                    elemId = values[2],
+                    color = values[3],
+                    size = int.Parse(values[4]),
+                    elType = (ElType)int.Parse(values[5]),
+                    errType = (ErrorType)int.Parse(values[6])
+
+                };
+
+                if(item.errType != ErrorType.Error0)
+                {
+                    Console.WriteLine($"HIBA! Gyártósor: {item.productionLineId}");
+                    groupedLogWriter.AddLogItem(item);
+                }
+
+                
+            }
+
+           
             groupedLogWriter.WriteToFile();
 
             SummaryCreator sc = new SummaryCreator();
-            sc.CreateSummaryFromLogFile(@"testlog.txt", @"testsummary.txt");
+            sc.CreateSummaryFromLogFile(testpath, summaryPath);
 
             Console.ReadKey();
         }
+
     }
 }
