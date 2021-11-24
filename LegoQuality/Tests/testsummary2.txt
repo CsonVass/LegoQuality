@@ -1,0 +1,8 @@
+Total number of elements: 15
+Total number of faulty elements: 5
+Fault rate: 33.33333333333333%
+
+Errors by code
+Error code: 1, number: 1, percentage: 20%
+Error code: 2, number: 3, percentage: 60%
+Error code: 3, number: 1, percentage: 20%
